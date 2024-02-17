@@ -9,10 +9,12 @@ import SwiftUI
 import CoreLocationUI
 
 struct WelcomeView: View {
-    private var locationManager = LocationManager()
+    @EnvironmentObject private var loadingViewModel: LoadingViewModel
     
     var body: some View {
         VStack {
+            
+            //Welcome Text
             VStack(spacing: 20) {
                 Text("WeatherManager")
                     .bold().font(.title)
@@ -20,15 +22,19 @@ struct WelcomeView: View {
                     .padding()
             }
             .padding()
+            
+            //Location Request Button
             LocationButton(.shareCurrentLocation) {
-                locationManager.requestLocation() //WIP
+                Task {
+                    loadingViewModel.requestLocationAuthorization()
+                }
             }
             .cornerRadius(30)
             .symbolVariant(.fill)
+            
         }
         .frame(maxWidth: .infinity, maxHeight: . infinity)
     }
-    
 }
 
 #Preview {

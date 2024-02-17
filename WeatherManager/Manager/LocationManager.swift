@@ -12,28 +12,35 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     @Published var status = "loading"
     @Published var location: CLLocationCoordinate2D?
 
+    
     override init() {
         super.init()
         setupLocationManager()
     }
     
+    
     private func setupLocationManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
     }
+       
     
     //Checks Authorization
-    func checkAuthorization() {
+    func checkAuthorization() -> Bool {
         if locationManager.authorizationStatus == .authorizedWhenInUse {
-            status = "authorized"
-        } else { status = "nil" }
+            return true
+        }
+        return false
     }
-
-    func requestLocation() {
+    
+    
+    //Requests WhenInUseAuthorization
+    func requestAuthorization() {
         locationManager.requestWhenInUseAuthorization()
-        locationManager.requestLocation()
-        locationManager.startUpdatingLocation()
+        status = "auth_request"
+        
     }
+        
     
     //Gets Current Location (WIP)
     func updateCurrentLocation() async throws {
@@ -50,9 +57,18 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if status == "auth_request" {
+            status = "auth_updated"
+        }
+    }
+    
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         //Success
     }
+    
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         //Failure (error message)

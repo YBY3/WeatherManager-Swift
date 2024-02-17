@@ -6,47 +6,64 @@
 //
 
 import SwiftUI
-import CoreLocation
+import Combine
 
 protocol LoadingViewModelProtocol: ObservableObject {
-    var showProgressView: Bool { get }
-    var showErrorAlert: Bool { get }
-    var showWelcomeView: Bool { get }
+    var reload: Bool { get }
+    var status: String { get }
     
-    func loadData() async
+    func checkLocationAuthorization() -> Bool
+    func requestLocationAuthorization()
     func getLocation() async
     func getWeatherData()
 }
 
-class LoadingViewModel: LoadingViewModelProtocol {
 
-    @Published var showProgressView = true
-    @Published var showErrorAlert = false
-    @Published var showWelcomeView = false
+class LoadingViewModel: LoadingViewModelProtocol {
+    @Published var reload = false
+    @Published var status = "location"
     private var locationManager = LocationManager()
+    private var cancellables: Set<AnyCancellable> = []
     
     
-    func loadData() async {
-        checkAuthorization()
-        if showWelcomeView == false {
-            await getLocation()
+    init() {
+        //Observes Changes in LocationManager Status
+        locationManager.$status
+            .sink { [weak self] newValue in
+                self?.checkLocationStatus(status: newValue)
+            }
+            .store(in: &cancellables)
+    }
+    
+    
+    //Performs Actions Based on LocationManager Status
+    private func checkLocationStatus(status: String) {
+        if status == "auth_updated" {
+            reload = true
         }
     }
     
-    private func checkAuthorization() {
-        locationManager.checkAuthorization()
-        if locationManager.status == "nil" {
-            showWelcomeView = true
-        }
+    
+    //Checks Access to Obtain Current Location
+    func checkLocationAuthorization() -> Bool {
+        return locationManager.checkAuthorization()
     }
     
-    func getLocation() async { //WIP
+    
+    //Requests Location Authorization from LocationManager
+    func requestLocationAuthorization() {
+        locationManager.requestAuthorization()
+    }
+    
+    
+    func getLocation() async {
         do {
             try await locationManager.updateCurrentLocation()
         } catch {
-            showErrorAlert = true
+            //Location Error
         }
     }
+    
     
     func getWeatherData() {
     }
