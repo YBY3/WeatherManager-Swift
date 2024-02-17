@@ -10,19 +10,16 @@ import Combine
 
 protocol LoadingViewModelProtocol: ObservableObject {
     var reload: Bool { get }
-    var status: String { get }
     
     func checkLocationAuthorization() -> Bool
     func requestLocationAuthorization()
     func getLocation() async
-    func getWeatherData()
 }
 
 
 class LoadingViewModel: LoadingViewModelProtocol {
     @Published var reload = false
-    @Published var status = "location"
-    private var locationManager = LocationManager()
+    private let locationManager = LocationManager()
     private var cancellables: Set<AnyCancellable> = []
     
     
@@ -56,15 +53,20 @@ class LoadingViewModel: LoadingViewModelProtocol {
     }
     
     
+    //Gets Location
     func getLocation() async {
         do {
             try await locationManager.updateCurrentLocation()
         } catch {
             //Location Error
+            print("Error Loading Location: ", error)
         }
     }
     
     
-    func getWeatherData() {
+    //Gets WeatherViewModel With Current LocationManager Instance
+    func getWeatherViewModel() -> WeatherViewModel {
+        let weatherViewModel = WeatherViewModel(locationManager: locationManager)
+        return weatherViewModel
     }
 }

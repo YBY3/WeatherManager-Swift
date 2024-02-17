@@ -19,14 +19,14 @@ struct LoadingView: View {
         showWeatherView = false
         showWelcomeView = false
         showProgressView = true
-        viewModel.status = "location"
         viewModel.reload = false
     }
     
     //Loads Data
-    private func loadData() {
+    private func loadData() async {
         if viewModel.checkLocationAuthorization() {
-            //WIP
+            await viewModel.getLocation()
+            showWeatherView = true
         }
         else {
             showWelcomeView = true
@@ -50,7 +50,7 @@ struct LoadingView: View {
                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
                 .frame(maxWidth: .infinity, maxHeight: 25)
                 .task {
-                    loadData()
+                    await loadData()
                 }
         }
         
@@ -63,7 +63,9 @@ struct LoadingView: View {
         
         //Shows WeatherView
         if showWeatherView {
-            //WIP
+            WeatherView(viewModel: viewModel.getWeatherViewModel())
+                .environmentObject(viewModel)
+                .onAppear() {showProgressView = false}
         }
         
     }
