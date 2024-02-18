@@ -9,7 +9,7 @@ import CoreLocation
 
 class LocationManager: NSObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
-    @Published var status = "loading"
+    @Published var status = "idle"
     @Published var location: CLLocationCoordinate2D?
 
     
@@ -42,19 +42,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
         
     
-    //Gets Current Location (WIP)
-    func updateCurrentLocation() async throws {
+    //Gets Current Location
+    func updateCurrentLocation() async {
         locationManager.startUpdatingLocation()
-        
-        if let location = locationManager.location?.coordinate {
-            locationManager.stopUpdatingLocation()
-            self.location = location
-            status = "complete"
-        }
-        
-        else {
-            print("Location Problem") //WIP
-        }
+        status = "location_request"
     }
     
     
@@ -66,11 +57,15 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        //Success
+        self.location = locationManager.location?.coordinate
+        if status == "location_request" {
+            status = "location_updated"
+        }
     }
     
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("location error: ", error)
         //Failure (error message)
     }
 }
