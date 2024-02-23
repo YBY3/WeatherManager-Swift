@@ -9,15 +9,22 @@ import SwiftUI
 import Combine
 import CoreLocation
 
+enum LoadingViewModelStatus {
+    case updateLocation
+    case weatherDataUpdated
+    case weatherViewModelUpdated
+}
+
+
 protocol LoadingViewModelProtocol: ObservableObject {
-    var status: String { get }
+    var status: LoadingViewModelStatus { get }
     var showProgressView: Bool { get }
     var showWelcomeView: Bool { get }
     var showWeatherView: Bool { get }
     var weatherViewModel: WeatherViewModel? { get }
     
-    func loadLocationStatusBasedData(status: String) async
-    func loadStatusBasedData(status: String) async
+    func loadLocationStatusBasedData(status: LocationManagerStatus) async
+    func loadStatusBasedData(status: LoadingViewModelStatus) async
     func getLocation() async
     func requestLocationAuthorization()
     func getWeatherData() async
@@ -26,7 +33,7 @@ protocol LoadingViewModelProtocol: ObservableObject {
 
 
 class LoadingViewModel: LoadingViewModelProtocol {
-    @Published var status = "update_location"
+    @Published var status = LoadingViewModelStatus.updateLocation
     @Published var showProgressView = true
     @Published var showWelcomeView = false
     @Published var showWeatherView = false
@@ -59,33 +66,33 @@ class LoadingViewModel: LoadingViewModelProtocol {
     
     
     //Loads Data Based on LocationManager Status
-    func loadLocationStatusBasedData(status: String) async {
+    func loadLocationStatusBasedData(status: LocationManagerStatus) async {
         //Reloads LoadingView if Location Authorization Is Updated
-        if status == "auth_updated" {
+        if status == .authUpdated {
             await reload()
         }
         
         //Gets WeatherData when Location is Updated
-        else if status == "location_updated" {
+        else if status == .locationUpdated {
             await getWeatherData()
         }
     }
     
     
     //Loads Data Based on LoadingViewModel Status
-    func loadStatusBasedData(status: String) async {
+    func loadStatusBasedData(status: LoadingViewModelStatus) async {
         //Gets Location if Status is get_location
-        if status == "update_location" {
+        if status == .updateLocation {
             await getLocation()
         }
         
         //Gets WeatherViewModel After WeatherData is Updated
-        if status == "weatherdata_updated" {
+        else if status == .weatherDataUpdated {
             await getWeatherViewModel()
         }
         
         //Shows WeatherView in LoadingView After WeatherViewModel is Updated
-        else if status == "weatherviewmodel_updated" {
+        else if status == .weatherViewModelUpdated {
             await MainActor.run {
                 showProgressView = false
                 showWeatherView = true
@@ -94,13 +101,14 @@ class LoadingViewModel: LoadingViewModelProtocol {
     }
     
     
+    //Reloads LoadingViewModel / LoadingView
     private func reload() async {
         await MainActor.run {
             showWeatherView = false
             showWelcomeView = false
             showProgressView = true
-            locationManager.status = "idle"
-            status = "update_location"
+            locationManager.status = .idle
+            status = .updateLocation
         }
     }
     
@@ -132,7 +140,7 @@ class LoadingViewModel: LoadingViewModelProtocol {
                 let forecastData = try await weatherAPIManager.loadForecastData(latitude: location.latitude, longitude: location.longitude)
                 await MainActor.run {
                     self.forecastData = forecastData
-                    status = "weatherdata_updated"
+                    status = .weatherDataUpdated
                 }
             }
         } catch {
@@ -148,7 +156,7 @@ class LoadingViewModel: LoadingViewModelProtocol {
             let weatherViewModel = WeatherViewModel(locationManager: locationManager, forecastData: forecastData)
             await MainActor.run {
                 self.weatherViewModel = weatherViewModel
-                status = "weatherviewmodel_updated"
+                status = .weatherViewModelUpdated
             }
         }
     }

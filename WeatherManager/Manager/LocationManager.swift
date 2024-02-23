@@ -7,9 +7,18 @@
 
 import CoreLocation
 
+enum LocationManagerStatus {
+    case idle
+    case authRequest
+    case authUpdated
+    case locationRequest
+    case locationUpdated
+}
+
+
 class LocationManager: NSObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
-    @Published var status = "idle"
+    @Published var status = LocationManagerStatus.idle
     @Published var location: CLLocationCoordinate2D?
 
     
@@ -37,29 +46,28 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     //Requests WhenInUseAuthorization
     func requestAuthorization() {
         locationManager.requestWhenInUseAuthorization()
-        status = "auth_request"
-        
+        status = .authRequest
     }
         
     
     //Gets Current Location
     func updateCurrentLocation() async {
         locationManager.startUpdatingLocation()
-        status = "location_request"
+        status = .locationRequest
     }
     
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        if status == "auth_request" {
-            status = "auth_updated"
+        if status == .authRequest {
+            status = .authUpdated
         }
     }
     
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.location = locationManager.location?.coordinate
-        if status == "location_request" {
-            status = "location_updated"
+        if status == .locationRequest {
+            self.location = locationManager.location?.coordinate
+            status = .locationUpdated
         }
     }
     
