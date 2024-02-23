@@ -16,10 +16,20 @@ enum LocationManagerStatus {
 }
 
 
-class LocationManager: NSObject, CLLocationManagerDelegate {
-    private let locationManager = CLLocationManager()
+protocol LocationManagerProtocol: ObservableObject {
+    var status: LocationManagerStatus { get }
+    var location: CLLocationCoordinate2D? { get }
+    
+    func checkAuthorization() -> Bool
+    func requestAuthorization()
+    func updateCurrentLocation()
+}
+
+
+class LocationManager: NSObject, CLLocationManagerDelegate, LocationManagerProtocol {
     @Published var status = LocationManagerStatus.idle
     @Published var location: CLLocationCoordinate2D?
+    private let locationManager = CLLocationManager()
 
     
     override init() {
@@ -51,7 +61,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         
     
     //Gets Current Location
-    func updateCurrentLocation() async {
+    func updateCurrentLocation() {
         locationManager.startUpdatingLocation()
         status = .locationRequest
     }

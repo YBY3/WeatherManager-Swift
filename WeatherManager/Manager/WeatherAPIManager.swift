@@ -6,25 +6,34 @@
 //
 
 import Foundation
-
 import CoreLocation
 
+enum WeatherAPIManagerStatus {
+    case idle
+    case updatedForecastData
+}
+
+
 class WeatherAPIManager {
+    @Published var status = WeatherAPIManagerStatus.idle
+    @Published var forecastData: ForecastData?
     let config = WeatherAPIConfig()
             
-    //Loads Weather API Data into ForcastData ResponseBody
-    func loadForecastData(latitude: CLLocationDegrees, longitude: CLLocationDegrees) async throws -> ForecastData {
+    //Loads Weather API Data into forcastData (ResponseBody Format)
+    func loadForecastData(latitude: CLLocationDegrees, longitude: CLLocationDegrees) async throws {
         let forecastURL = "https://api.openweathermap.org/data/2.5/forecast?lat=\(latitude)&lon=\(longitude)&appid=\(config.getWeatherAPIKey())"
         guard let url = URL(string: forecastURL) else { fatalError("Missing URL")}
         let urlRequest = URLRequest(url: url)
         let (data, response) = try await URLSession.shared.data(for: urlRequest)
         guard (response as? HTTPURLResponse)?.statusCode == 200 else { fatalError("Could Not Load Weather Data") }
         let decodeData = try JSONDecoder().decode(ForecastData.self, from: data)
-        return decodeData
+        self.forecastData = decodeData
+        self.status = .updatedForecastData
     }
 }
 
-//Forecast Data Format
+
+//ForecastData (ResponseBody Format)
 struct ForecastData: Decodable {
     
     var city: CityResponse

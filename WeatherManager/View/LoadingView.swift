@@ -22,19 +22,16 @@ struct LoadingView: View {
         
         //Shows WelcomeView
         else if viewModel.showWelcomeView {
-            WelcomeView()
-                .environmentObject(viewModel)
+            viewModel.getWelcomeView()
         }
         
         //Shows WeatherView
         else if viewModel.showWeatherView {
-            if let weatherViewModel = viewModel.weatherViewModel {
-                WeatherView(viewModel: weatherViewModel)
-                    .environmentObject(viewModel)
-            }
+            viewModel.getWeatherView()
         }
     }
 }
+
 
 #Preview {
     LoadingView()

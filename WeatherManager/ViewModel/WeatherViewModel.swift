@@ -8,19 +8,18 @@
 import Foundation
 import Combine
 
-protocol WeatherViewModelProtocol: ObservableObject {
-    var forecastData: ForecastData? { get }
+protocol WeatherViewModelProtocol: ObservableObject { //WIP
     
 }
 
 
 class WeatherViewModel: WeatherViewModelProtocol {
+    private var dataManager: DataManager
     @Published var forecastData: ForecastData?
-    private var locationManager = LocationManager()
     
-    //Init
-    init(locationManager: LocationManager, forecastData: ForecastData) {
-        self.locationManager = locationManager
-        self.forecastData = forecastData
+    //Constructor
+    init(dataManager: DataManager) {
+        self.dataManager = dataManager
+        self.forecastData = dataManager.getForecastData()
     }
 }

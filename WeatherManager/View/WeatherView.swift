@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct WeatherView: View {
-    @EnvironmentObject private var loadingViewModel: LoadingViewModel
     @StateObject var viewModel: WeatherViewModel
-
+    
+    //Constructor
     init(viewModel: WeatherViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-    
 
     var body: some View {
         let _ = print("weatherview") //reloading test
@@ -25,11 +24,9 @@ struct WeatherView: View {
     }
 }
 
-//#Preview {
-//    WeatherView(
-//        viewModel: WeatherViewModel(
-//            locationManager: LocationManager(),
-//            forecastData: ForecastData
-//        )
-//    )
-//}
+
+#Preview {
+    WeatherView(
+        viewModel: WeatherViewModel(dataManager: DataManager())
+    )
+}
