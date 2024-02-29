@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct WeatherView: View {
-    @StateObject var viewModel: WeatherViewModel
+    private var viewModel: AppViewModel
     
-    //Constructor
-    init(viewModel: WeatherViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+    init(viewModel: AppViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {
         let _ = print("weatherview") //reloading test
         
-        if let forecastData = viewModel.forecastData { //WIP
+        if let forecastData = viewModel.getForecastData() { //WIP
             let _ = print(forecastData.city)
         }
     }
@@ -26,7 +25,5 @@ struct WeatherView: View {
 
 
 #Preview {
-    WeatherView(
-        viewModel: WeatherViewModel(dataManager: DataManager())
-    )
+    WeatherView(viewModel: AppViewModel())
 }

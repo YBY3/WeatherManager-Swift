@@ -9,9 +9,18 @@ import SwiftUI
 
 @main
 struct WeatherManagerApp: App {
+    @StateObject private var viewModel = AppViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            LoadingView()
+            switch viewModel.viewState {
+                case .loading:
+                    LoadingView()
+                case .welcome:
+                    WelcomeView(viewModel: viewModel)
+                case .weather:
+                    WeatherView(viewModel: viewModel)
+            }
         }
     }
 }

@@ -7,7 +7,7 @@
 
 import CoreLocation
 
-enum LocationManagerStatus {
+enum LocationManagerState {
     case idle
     case authRequest
     case authUpdated
@@ -17,7 +17,7 @@ enum LocationManagerStatus {
 
 
 protocol LocationManagerProtocol: ObservableObject {
-    var status: LocationManagerStatus { get }
+    var status: LocationManagerState { get }
     var location: CLLocationCoordinate2D? { get }
     
     func checkAuthorization() -> Bool
@@ -27,7 +27,7 @@ protocol LocationManagerProtocol: ObservableObject {
 
 
 class LocationManager: NSObject, CLLocationManagerDelegate, LocationManagerProtocol {
-    @Published var status = LocationManagerStatus.idle
+    @Published var status = LocationManagerState.idle
     @Published var location: CLLocationCoordinate2D?
     private let locationManager = CLLocationManager()
 

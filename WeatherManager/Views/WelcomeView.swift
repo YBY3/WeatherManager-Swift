@@ -9,14 +9,15 @@ import SwiftUI
 import CoreLocationUI
 
 struct WelcomeView: View {
-    private var dataManager: DataManager
+    private var viewModel: AppViewModel
     
-    //Constructor
-    init(dataManager: DataManager) {
-        self.dataManager = dataManager
+    init(viewModel: AppViewModel) {
+        self.viewModel = viewModel
     }
     
     var body: some View {
+        let _ = print("welcomeview") //reloading test
+        
         VStack {
             
             //Welcome Text
@@ -31,7 +32,7 @@ struct WelcomeView: View {
             //Location Request Button
             LocationButton(.shareCurrentLocation) {
                 Task {
-                    dataManager.requestLocationAuthorization()
+                    viewModel.requestLocationAuthorization()
                 }
             }
             .cornerRadius(30)
@@ -44,5 +45,5 @@ struct WelcomeView: View {
 
 
 #Preview {
-    WelcomeView(dataManager: DataManager())
+    WelcomeView(viewModel: AppViewModel())
 }
