@@ -21,14 +21,15 @@ protocol DataManagerProtocol: ObservableObject {
     func getLocation()
     func fetchForecastData() async
     func reload()
+    func getForecastData() -> ForecastData?
 }
 
 
 class DataManager: DataManagerProtocol {
     @Published var status = DataManagerState.loading
-    private var locationManager: LocationManager
+    private let networkManager = NetworkManager()
+    private let locationManager: LocationManager
     private let appCancellables: AppCancellables //WIP
-    private var networkManager = NetworkManager()
     
     
     init(locationManager: LocationManager, appCancellables: AppCancellables) {
@@ -120,7 +121,7 @@ class DataManager: DataManagerProtocol {
     }
     
     
-    //Gets ForecastData (wip)
+    //Returns ForecastData From NetworkManager
     func getForecastData() -> ForecastData? {
         if let forecastData = networkManager.forecastData {
             return forecastData

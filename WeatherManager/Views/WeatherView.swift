@@ -8,18 +8,19 @@
 import SwiftUI
 
 struct WeatherView: View {
-    private var viewModel: AppViewModel
+    private let viewModel: AppViewModel
+    private let weatherComponentViewModel: WeatherComponentViewModel
     
     init(viewModel: AppViewModel) {
         self.viewModel = viewModel
+        self.weatherComponentViewModel = viewModel.getWeatherComponentViewModel()
     }
 
     var body: some View {
         let _ = print("weatherview") //reloading test
         
-        if let forecastData = viewModel.getForecastData() { //WIP
-            let _ = print(forecastData.city)
-        }
+        CurrentRow(viewModel: weatherComponentViewModel)
+        
     }
 }
 

@@ -18,13 +18,15 @@ enum AppViewState {
 protocol AppViewModelProtocol: ObservableObject {
     var viewState: AppViewState { get }
     
+    func observeStatusChanges()
     func requestLocationAuthorization()
+    func getWeatherComponentViewModel() -> WeatherComponentViewModel
 }
 
 
 class AppViewModel: AppViewModelProtocol {
     @Published var viewState = AppViewState.loading
-    private var dataManager: DataManager
+    private let dataManager: DataManager
     private let locationManager = LocationManager()
     private let appCancellables = AppCancellables() //WIP
     
@@ -47,6 +49,7 @@ class AppViewModel: AppViewModelProtocol {
     }
     
     
+    //Gets View State Based on DataManagerState
     private func getViewState(state: DataManagerState) async {
         await MainActor.run {
             switch state {
@@ -67,13 +70,10 @@ class AppViewModel: AppViewModelProtocol {
     }
     
     
-    //Gets ForecastData (wip)
-    func getForecastData() -> ForecastData? {
-        if let forecastData = dataManager.getForecastData() {
-            return forecastData
-        }
-        return nil
+    //Returns WeatherComponentViewModel with ForecastData
+    func getWeatherComponentViewModel() -> WeatherComponentViewModel {
+        let forecastData = dataManager.getForecastData()
+        return WeatherComponentViewModel(forecastData: forecastData)
     }
-
 }
 
