@@ -15,6 +15,7 @@
 		195836BF2B927EAC002656D3 /* WeatherComponentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 195836BE2B927EAC002656D3 /* WeatherComponentViewModel.swift */; };
 		195836C42B92AAEE002656D3 /* ForecastDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 195836C32B92AAEE002656D3 /* ForecastDataLoader.swift */; };
 		195836C62B92B584002656D3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 195836C52B92B584002656D3 /* Extensions.swift */; };
+		195836C82B9457FB002656D3 /* ForecastData.json in Resources */ = {isa = PBXBuildFile; fileRef = 195836C72B9457FB002656D3 /* ForecastData.json */; };
 		197B44E22B7D8196008D1B28 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197B44E12B7D8196008D1B28 /* WelcomeView.swift */; };
 		197B44E82B7D8691008D1B28 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197B44E72B7D8691008D1B28 /* LoadingView.swift */; };
 		197B44EB2B7D8916008D1B28 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197B44EA2B7D8916008D1B28 /* LocationManager.swift */; };
@@ -25,6 +26,8 @@
 		19A2DD262B7C295F00F03E70 /* WeatherManagerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A2DD252B7C295F00F03E70 /* WeatherManagerUITests.swift */; };
 		19A2DD282B7C295F00F03E70 /* WeatherManagerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A2DD272B7C295F00F03E70 /* WeatherManagerUITestsLaunchTests.swift */; };
 		19A7198D2B8862C70000DB90 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A7198C2B8862C70000DB90 /* DataManager.swift */; };
+		19B19E802B96C7D500383318 /* PreviewDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B19E7F2B96C7D500383318 /* PreviewDataLoader.swift */; };
+		19B19E822B96C82200383318 /* PreviewAppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B19E812B96C82200383318 /* PreviewAppViewModel.swift */; };
 		19F2766A2B814DB600517C71 /* WeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F276692B814DB600517C71 /* WeatherView.swift */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +58,7 @@
 		195836BE2B927EAC002656D3 /* WeatherComponentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherComponentViewModel.swift; sourceTree = "<group>"; };
 		195836C32B92AAEE002656D3 /* ForecastDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastDataLoader.swift; sourceTree = "<group>"; };
 		195836C52B92B584002656D3 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		195836C72B9457FB002656D3 /* ForecastData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForecastData.json; sourceTree = "<group>"; };
 		197B44E12B7D8196008D1B28 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		197B44E72B7D8691008D1B28 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		197B44EA2B7D8916008D1B28 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -68,6 +72,8 @@
 		19A2DD252B7C295F00F03E70 /* WeatherManagerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherManagerUITests.swift; sourceTree = "<group>"; };
 		19A2DD272B7C295F00F03E70 /* WeatherManagerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherManagerUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		19A7198C2B8862C70000DB90 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		19B19E7F2B96C7D500383318 /* PreviewDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDataLoader.swift; sourceTree = "<group>"; };
+		19B19E812B96C82200383318 /* PreviewAppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAppViewModel.swift; sourceTree = "<group>"; };
 		19F276692B814DB600517C71 /* WeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -216,6 +222,9 @@
 			isa = PBXGroup;
 			children = (
 				19A2DD112B7C295F00F03E70 /* Preview Assets.xcassets */,
+				195836C72B9457FB002656D3 /* ForecastData.json */,
+				19B19E7F2B96C7D500383318 /* PreviewDataLoader.swift */,
+				19B19E812B96C82200383318 /* PreviewAppViewModel.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -342,6 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				19A2DD122B7C295F00F03E70 /* Preview Assets.xcassets in Resources */,
+				195836C82B9457FB002656D3 /* ForecastData.json in Resources */,
 				19A2DD0F2B7C295F00F03E70 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -370,11 +380,13 @@
 				193E91A52B8FA2F9000B85AD /* AppViewModel.swift in Sources */,
 				197B44E22B7D8196008D1B28 /* WelcomeView.swift in Sources */,
 				197B44EB2B7D8916008D1B28 /* LocationManager.swift in Sources */,
+				19B19E822B96C82200383318 /* PreviewAppViewModel.swift in Sources */,
 				193E91AE2B905B8E000B85AD /* NetworkManager.swift in Sources */,
 				195836B92B9278D0002656D3 /* APIConfig.swift in Sources */,
 				195836BF2B927EAC002656D3 /* WeatherComponentViewModel.swift in Sources */,
 				19A2DD0B2B7C295E00F03E70 /* WeatherManagerApp.swift in Sources */,
 				193E91AC2B8FF562000B85AD /* AppCancellables.swift in Sources */,
+				19B19E802B96C7D500383318 /* PreviewDataLoader.swift in Sources */,
 				195836BC2B927BAC002656D3 /* CurrentRow.swift in Sources */,
 				197B44E82B7D8691008D1B28 /* LoadingView.swift in Sources */,
 				195836C42B92AAEE002656D3 /* ForecastDataLoader.swift in Sources */,

@@ -55,6 +55,10 @@ struct CurrentRow: View {
 }
 
 
-//#Preview {
-//    CurrentRow()
-//}
+//Preivew
+struct CurrentRow_Preview: PreviewProvider {
+    static let previewData = PreviewDataLoader()
+    static var previews: some View {
+        CurrentRow(viewModel: WeatherComponentViewModel(forecastData: previewData.forecastData))
+    }
+}

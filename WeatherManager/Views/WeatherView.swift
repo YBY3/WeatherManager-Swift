@@ -26,5 +26,5 @@ struct WeatherView: View {
 
 
 #Preview {
-    WeatherView(viewModel: AppViewModel())
+    WeatherView(viewModel: PreviewAppViewModel())
 }

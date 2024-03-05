@@ -45,5 +45,5 @@ struct WelcomeView: View {
 
 
 #Preview {
-    WelcomeView(viewModel: AppViewModel())
+    WelcomeView(viewModel: PreviewAppViewModel())
 }
