@@ -14,7 +14,7 @@ protocol WeatherComponentViewModelProtocol: ObservableObject {
 
 class WeatherComponentViewModel: WeatherComponentViewModelProtocol {
     private let forecastDataLoader: ForecastDataLoader
-    private var settingsUnit = UserDefaults.standard.string(forKey: "settingsUnit") ?? "fahrenheit" //WIP
+    private let weatherComponentUtils = WeatherComponentUtils()
     
     
     init(forecastData: ForecastData?) {
@@ -22,59 +22,75 @@ class WeatherComponentViewModel: WeatherComponentViewModelProtocol {
     }
     
     
-    func getCurrentRowData() -> ([String], [String], String, [String]) {
-        let temp = convertTemp(kelvin_temp: forecastDataLoader.kelvinTempLists[0][0])
-        let wind = convertWind(data: forecastDataLoader.windAvgLists[0][0])
-        let icon = getConditionIcon(conditionInt: forecastDataLoader.conditionLists[0][0]) //ADD MORE DETAIL
-        let sunData = getDayInfo(dayInfoList: forecastDataLoader.dayInfoList)
+    //Gets CurrentRow with Data
+    func getCurrentRow() -> CurrentRow {
+        let sunData = weatherComponentUtils.getSunData(dayInfoList: forecastDataLoader.dayInfoList)
+        let units = weatherComponentUtils.getUnits()
+        let temp = weatherComponentUtils.convertTemp(kelvinData: forecastDataLoader.kelvinTempLists[0][0])
+        let wind = weatherComponentUtils.convertWind(metricData: forecastDataLoader.windAvgLists[0][0])
+        let icon = weatherComponentUtils.getConditionIcon(conditionInt: forecastDataLoader.conditionLists[0][0]) //ADD MORE DETAIL
         
-        return (temp, wind, icon, sunData)
+        return CurrentRow(sunData: sunData, units: units, temp: temp, wind: wind, icon: icon)
     }
     
     
-    //Converts Kelvin Temp Data
-    private func convertTemp(kelvin_temp: Double) -> [String] {
-        if settingsUnit == "celsius" {
-            return [(kelvin_temp-273.15).roundToString() + "°", "C"]
-        }
-        else if settingsUnit == "kelvin" {
-            return [kelvin_temp.roundToString(), "K"]
-        }
-        return [(1.8*(kelvin_temp-273.15)+32).roundToString() + "°", "F"]
-    }
-    
-    
-    //Converts Metric Wind Data
-    private func convertWind(data: Double) -> [String] {
-        if settingsUnit == "celsius" || settingsUnit == "kelvin" {
-            return [(data * 3.6).roundToString(), "km/h"]
-        }
-        return [(data * 2.23694).roundToString(), "mph"]
-    }
-
-    
-    //Gets Sunrise/Sunset Data Based on Time (WIP)
-    private func getDayInfo(dayInfoList: [String]) -> [String] {
-        let dayState = dayInfoList[0]
-        let currentTime = dayInfoList[2]
-        let sunriseTime = dayInfoList[3]
-        let sunsetTime = dayInfoList[4]
+    //Gets ForecastRow with Data
+    func getForecastRow(index: Int) -> ForecastRow {
+        let date = forecastDataLoader.dateLists[index]
+        let units = weatherComponentUtils.getUnits()
+        let tempMin = weatherComponentUtils.convertTemp(kelvinData: forecastDataLoader.kelvinTempLists[5][index])
+        let tempMax = weatherComponentUtils.convertTemp(kelvinData: forecastDataLoader.kelvinTempLists[6][index])
+        let icon = weatherComponentUtils.getConditionIcon(conditionInt: forecastDataLoader.conditionLists[index].max()!) //ADD MORE DETAIL
+        let precipitation_avg = weatherComponentUtils.smartAverage(list_item: forecastDataLoader.precipitationLists[index])
+        let (graphScale, graphWidth, graphOffset) = horizontalGraphCalc(index: index)
         
-        if dayState == "night" {
-            return ["sunrise", currentTime, sunriseTime]
-        }
-        
-        return ["sunset", currentTime, sunsetTime]
+        return ForecastRow(
+            date: date,
+            units: units,
+            tempMin: tempMin,
+            tempMax: tempMax,
+            icon: icon,
+            precipitation_avg: precipitation_avg,
+            graphScale: graphScale,
+            graphWidth: graphWidth,
+            graphOffset: graphOffset
+        )
     }
     
     
-    //Gets Condition Icon
-    private func getConditionIcon(conditionInt: Int) -> String {
-        if conditionInt == 1 {return "cloud"}
-        else if conditionInt == 2 {return "cloud.drizzle"}
-        else if conditionInt == 3 {return "cloud.rain"}
-        else if conditionInt == 4 {return "cloud.bolt.rain"}
-        else if conditionInt == 5 {return "cloud.snow"}
-        return "sun.max"
+    
+    //Horizontal Graph Calculator (WIP)
+    func horizontalGraphCalc(index: Int) -> (Double, Double, Double) {
+        let kelvinWeeklyMin = forecastDataLoader.kelvinTempLists[5].min()!
+        let kelvinWeeklyMax = forecastDataLoader.kelvinTempLists[6].max()!
+        let kelvinMin = forecastDataLoader.kelvinTempLists[5][index]
+        let kelvinMax = forecastDataLoader.kelvinTempLists[6][index]
+        
+        let graph_scale = (kelvinWeeklyMax - kelvinWeeklyMin)
+        let graph_width = (135 / graph_scale) * (kelvinMax - kelvinMin)
+        if (kelvinMin - kelvinWeeklyMin) <= (kelvinWeeklyMax - kelvinMax) {
+            let graph_offset_negative = -(((kelvinMin - kelvinWeeklyMin) + ((kelvinMax - kelvinMin) / 2)) - (graph_scale / 2))
+            return (-graph_scale, graph_width, graph_offset_negative)
+        }
+        let graph_offset_positive = -(((kelvinWeeklyMax - kelvinMax) + ((kelvinMax - kelvinMin) / 2)) - (graph_scale / 2))
+        
+        return (graph_scale, graph_width, graph_offset_positive)
+    }
+    
+    
+    //Vertical Graph Calculator - [scale, dataList, dataMax, graphBaseLine (Enter 0 if Static)] (WIP)
+    func verticalGraphCalc(data: [Double]) -> [Double] {
+        let graphScale = data[0] / data[2]
+        let graphBaseLine = (graphScale * data[3])
+        if data[1] >= 0 {
+            let graphHeight = graphScale * data[1]
+            let graphOffset = (graphHeight / -2) - graphBaseLine
+            return [graphHeight, graphOffset]
+        }
+        else {
+            let graphHeight = graphScale * -data[1]
+            let graphOffset = (graphHeight / 2) - graphBaseLine
+            return [graphHeight, graphOffset]
+        }
     }
 }

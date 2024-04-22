@@ -8,57 +8,61 @@
 import SwiftUI
 
 struct CurrentRow: View {
-    
-    let viewModel: WeatherComponentViewModel
+    let sunData: [String]
+    let units: [String]
+    let temp: String
+    let wind: String
+    let icon: String
     
     var body: some View {
-        
-        let (temp, wind, icon, dayInfoData) = viewModel.getCurrentRowData()
-    
         VStack(alignment: .leading, spacing: 5) {
-            
             //Current Time
-            Text(dayInfoData[1])
+            Text(sunData[0])
                 .font(.system(size: 20))
             
             //Current Temp, Current Wind Speed, (Sunset/Sunrise Time)
             HStack {
+                
                 Spacer()
                 Image(systemName: icon)
                     .font(.system(size: 20))
                     .frame(width: 25, height: 10)
-                Text(temp[0] + " " + temp[1])
+                Text(temp + " " + units[0])
                     .font(.system(size: 20))
                     .bold()
                 Spacer()
                 Image(systemName: "wind")
                     .font(.system(size: 20))
                     .frame(width: 25, height: 10)
-                Text(wind[0] + " " + wind[1])
+                Text(wind + " " + units[1])
                     .font(.system(size: 20))
                     .bold()
                 Spacer()
-                Image(systemName: dayInfoData[0])
+                Image(systemName: sunData[1])
                     .font(.system(size: 20))
                     .frame(width: 25, height: 10)
-                Text(dayInfoData[2])
+                Text(sunData[2])
                     .font(.system(size: 20))
                 Spacer()
+                
             }
             .frame(height: 40)
             .background(Color(UIColor.systemGray6))
             .clipShape(RoundedRectangle(cornerRadius: 10))
-        } //Main VStack End
+            
+        } //Main VStack
         .foregroundColor(.green) //ADD System Color UI Setting
         .padding(.horizontal)
     }
 }
 
 
-//Preivew
-struct CurrentRow_Preview: PreviewProvider {
-    static let previewData = PreviewDataLoader()
-    static var previews: some View {
-        CurrentRow(viewModel: WeatherComponentViewModel(forecastData: previewData.forecastData))
-    }
+#Preview {
+    CurrentRow(
+        sunData: ["7:10 PM", "sunrise", "7:10 AM"],
+        units: ["°F", "mph"],
+        temp: "75",
+        wind: "15",
+        icon: "sun.max"
+    )
 }
